@@ -529,7 +529,9 @@ async def create_tarifa(
     tarifa_data["created_at"] = datetime.now(timezone.utc).isoformat()
     tarifa_data["updated_at"] = datetime.now(timezone.utc).isoformat()
     
-    await db.tarifas.insert_one(tarifa_data)
+    doc_to_insert = {**tarifa_data}
+    await db.tarifas.insert_one(doc_to_insert)
+    
     return tarifa_data
 
 @api_router.put("/admin/tarifas/{tarifa_id}")
