@@ -1,0 +1,170 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Alluz Energia",
+      "slogan": "Alluz. Onde há luz, lá nos estaremos!",
+      "archetype": "Organic & Earthy (Trust) + Swiss (Clarity)",
+      "tone": "Optimistic, Technological, Trustworthy, Warm",
+      "theme_mode": "light"
+    },
+    "typography": {
+      "font_family": {
+        "headings": "Manrope, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-6xl font-bold tracking-tight",
+        "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+        "h3": "text-2xl font-semibold",
+        "body_lg": "text-lg leading-relaxed",
+        "body_base": "text-base leading-relaxed",
+        "caption": "text-sm text-muted-foreground"
+      },
+      "imports": [
+        "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;600;700;800&display=swap');"
+      ]
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#F59E0B",
+          "foreground": "#0F172A",
+          "hover": "#D97706"
+        },
+        "secondary": {
+          "DEFAULT": "#0F172A",
+          "foreground": "#F8FAFC"
+        },
+        "background": {
+          "DEFAULT": "#FAFAF9",
+          "paper": "#FFFFFF",
+          "subtle": "#F5F5F4"
+        },
+        "accent": {
+          "DEFAULT": "#0EA5E9",
+          "foreground": "#FFFFFF"
+        },
+        "muted": {
+          "DEFAULT": "#E7E5E4",
+          "foreground": "#57534E"
+        },
+        "success": "#10B981",
+        "warning": "#F59E0B",
+        "error": "#EF4444"
+      },
+      "gradients": {
+        "hero": "bg-gradient-to-br from-amber-100 via-orange-50 to-stone-100",
+        "card_hover": "hover:bg-gradient-to-br hover:from-white hover:to-amber-50/50"
+      }
+    },
+    "spacing": {
+      "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+      "section_padding": "py-16 md:py-24",
+      "card_padding": "p-6 md:p-8"
+    },
+    "visual_enhancers": {
+      "radius": "rounded-xl",
+      "shadows": {
+        "card": "shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300",
+        "floating": "shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
+      },
+      "borders": "border border-stone-200",
+      "glass": "bg-white/80 backdrop-blur-md border-white/20"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-8 rounded-full font-semibold shadow-lg shadow-amber-500/20 transition-all hover:scale-105 active:scale-95",
+      "secondary": "bg-white text-secondary border-2 border-stone-200 hover:border-primary/50 hover:bg-stone-50 h-12 px-8 rounded-full font-medium transition-all",
+      "ghost": "hover:bg-stone-100 text-stone-600 hover:text-stone-900"
+    },
+    "cards": {
+      "feature": "bg-white rounded-2xl p-8 border border-stone-100 shadow-sm hover:shadow-md transition-all duration-300 group",
+      "step_option": "cursor-pointer bg-white rounded-xl p-6 border-2 border-transparent hover:border-primary/50 hover:bg-amber-50/30 transition-all duration-200 flex flex-col items-center justify-center gap-4 text-center h-full min-h-[160px]",
+      "step_option_active": "border-primary bg-amber-50/50 shadow-md ring-1 ring-primary/20"
+    },
+    "inputs": {
+      "default": "h-12 rounded-lg border-stone-200 bg-white px-4 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "structure": "Hero (Split) -> Features (Grid) -> How It Works (Steps) -> Testimonials -> CTA -> Footer",
+      "hero_style": "Left: Big Headline + CTA. Right: Hero Image with floating 'Savings' badge.",
+      "bg_style": "Warm Stone-50 background with subtle noise texture."
+    },
+    "simulator": {
+      "structure": "Centered Wizard Card. Top: Progress Bar. Middle: Question + Options Grid. Bottom: Navigation (Back/Next).",
+      "animation": "AnimatePresence mode='wait'. Variants: enter { x: 50, opacity: 0 }, center { x: 0, opacity: 1 }, exit { x: -50, opacity: 0 }."
+    },
+    "result_page": {
+      "structure": "Dashboard Layout. Top: Summary (System Size, Monthly Savings). Middle: Charts/Details (Payback, CO2). Bottom: Lead Capture Modal (Persistent).",
+      "highlight": "Use 'CountUp' animation for all numbers."
+    },
+    "admin_dashboard": {
+      "structure": "Sidebar Layout. Main Content: Data Table with Filters. Top: KPI Cards.",
+      "style": "Dense, clean, white background cards on light gray canvas."
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_main": {
+        "url": "https://images.unsplash.com/photo-1723046106153-8d3810267931?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Modern house with solar panels",
+        "usage": "Landing page hero section right side"
+      },
+      "family_trust": {
+        "url": "https://images.pexels.com/photos/7578990/pexels-photo-7578990.jpeg",
+        "alt": "Happy family in front of home",
+        "usage": "Testimonials or 'Why Choose Us' section"
+      },
+      "tech_detail": {
+        "url": "https://images.unsplash.com/photo-1626793369994-a904d2462888?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Solar technology detail",
+        "usage": "Technical specs or 'How it works' background"
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "mapping": {
+        "sun": "Sun",
+        "savings": "PiggyBank",
+        "energy": "Zap",
+        "home": "Home",
+        "chart": "BarChart3",
+        "check": "CheckCircle2",
+        "arrow_right": "ArrowRight",
+        "user": "User",
+        "settings": "Settings",
+        "logout": "LogOut"
+      }
+    }
+  },
+  "libraries": {
+    "animation": "framer-motion",
+    "icons": "lucide-react",
+    "charts": "recharts",
+    "notifications": "sonner",
+    "numbers": "react-countup",
+    "utils": "clsx, tailwind-merge"
+  },
+  "universal_guidelines": {
+    "general": [
+      "Use 'Manrope' for all headings to give a distinct modern feel.",
+      "Never use pure black (#000000). Use Slate-900 (#0F172A) for text.",
+      "Always add 'hover:scale-105' or similar micro-interactions to clickable cards.",
+      "Use 'sonner' for all toast notifications.",
+      "Ensure all inputs have 'data-testid' for testing.",
+      "Simulator steps must feel like a conversation, not a form."
+    ],
+    "simulator_logic": {
+      "step_1": "Select Property Type (House, Business, Farm)",
+      "step_2": "Monthly Bill Value (Slider or Input)",
+      "step_3": "Location (City/State - Auto-fetch irradiation if possible, else mock)",
+      "step_4": "Roof Type (Tile, Metal, Slab)",
+      "step_5": "Project Type (New, Expansion)",
+      "result": "Show: kWp, # Panels, Inverter, Payback Time, Monthly Savings."
+    }
+  }
+}
