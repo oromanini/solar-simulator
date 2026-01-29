@@ -27,6 +27,15 @@ export default function LandingPage() {
                 WhatsApp
               </Button>
             </a>
+            <Button 
+              size="sm" 
+              variant="ghost"
+              onClick={() => navigate('/admin/login')}
+              data-testid="header-login-btn"
+              className="text-stone-600 hover:text-primary hover:bg-amber-50"
+            >
+              Login
+            </Button>
           </div>
         </div>
       </header>
