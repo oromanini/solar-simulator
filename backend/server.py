@@ -498,7 +498,9 @@ async def create_status_type(
     status_data["status_id"] = status_id
     status_data["created_at"] = datetime.now(timezone.utc).isoformat()
     
-    await db.status_types.insert_one(status_data)
+    doc_to_insert = {**status_data}
+    await db.status_types.insert_one(doc_to_insert)
+    
     return status_data
 
 @api_router.delete("/admin/status-types/{status_id}")
