@@ -177,10 +177,10 @@ class AlluzSolarAPITester:
 
         if not self.session_token:
             print("⚠️  No session token available. Skipping admin tests.")
-            print("   To test admin endpoints:")
-            print("   1. Follow auth_testing.md playbook")
-            print("   2. Set session_token in this script")
             return
+
+        # Test auth/me endpoint first
+        self.run_test("Get Current User", "GET", "auth/me", 200)
 
         # Test admin stats
         self.run_test("Get Admin Stats", "GET", "admin/stats", 200)
@@ -189,13 +189,33 @@ class AlluzSolarAPITester:
         self.run_test("Get Admin Leads", "GET", "admin/leads?page=1&limit=10", 200)
 
         # Test status types
-        self.run_test("Get Status Types", "GET", "admin/status-types", 200)
+        success, status_types = self.run_test("Get Status Types", "GET", "admin/status-types", 200)
+
+        # Test creating a new status type
+        new_status = {
+            "nome": "Teste Status",
+            "cor": "#FF5733",
+            "ordem": 99
+        }
+        success, created_status = self.run_test("Create Status Type", "POST", "admin/status-types", 200, new_status)
 
         # Test tarifas
         self.run_test("Get Tarifas", "GET", "admin/tarifas", 200)
 
+        # Test creating a new tarifa
+        new_tarifa = {
+            "estado": "TS",
+            "concessionaria": "Teste Energia",
+            "valor_kwh": 0.95
+        }
+        success, created_tarifa = self.run_test("Create Tarifa", "POST", "admin/tarifas", 200, new_tarifa)
+
         # Test admin config
         self.run_test("Get Admin Config", "GET", "admin/configuracao", 200)
+
+        # Test updating config
+        config_update = {"valor_kwp": 3600.0}
+        self.run_test("Update Config", "PUT", "admin/configuracao", 200, config_update)
 
     def test_error_cases(self):
         """Test error handling"""
