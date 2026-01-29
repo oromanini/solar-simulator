@@ -483,7 +483,8 @@ async def get_status_types(user: dict = Depends(get_session_from_cookie_or_heade
             {"status_id": str(uuid.uuid4()), "nome": "Convertido", "cor": "#10B981", "ordem": 5, "created_at": datetime.now(timezone.utc).isoformat()},
             {"status_id": str(uuid.uuid4()), "nome": "Perdido", "cor": "#EF4444", "ordem": 6, "created_at": datetime.now(timezone.utc).isoformat()}
         ]
-        await db.status_types.insert_many(default_statuses)
+        for status in default_statuses:
+            await db.status_types.insert_one({**status})
         return default_statuses
     return status_types
 
