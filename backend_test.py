@@ -164,11 +164,10 @@ class AlluzSolarAPITester:
         print("SETTING UP ADMIN SESSION")
         print("="*50)
 
-        # This would normally require the auth_testing.md process
-        # For now, we'll try to test without auth and see what happens
-        print("⚠️  Admin session setup required for protected endpoints")
-        print("   Use auth_testing.md playbook to create session")
-        return False
+        # Use the session token created via auth_testing.md playbook
+        self.session_token = "test_session_1769655610375"
+        print(f"✅ Using session token: {self.session_token}")
+        return True
 
     def test_admin_endpoints(self):
         """Test admin endpoints (requires authentication)"""
