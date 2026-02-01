@@ -7,9 +7,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    const redirectUrl = window.location.origin + '/admin';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    window.alert("Autenticação não configurada.");
   };
 
   return (

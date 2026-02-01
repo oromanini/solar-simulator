@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 
 class AlluzSolarAPITester:
-    def __init__(self, base_url="https://solar-savings-5.preview.emergentagent.com/api"):
+    def __init__(self, base_url="http://localhost:8000/api"):
         self.base_url = base_url
         self.session_token = None
         self.tests_run = 0
