@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+      DB_NAME: "solar_simulator"
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      SENDER_EMAIL: "${SENDER_EMAIL:-onboarding@resend.dev}"
+      NOTIFICATION_EMAIL: "${NOTIFICATION_EMAIL:-alluzenergia@gmail.com}"
+      ALLOWED_ADMIN_EMAIL: "${ALLOWED_ADMIN_EMAIL:-alluzenergia@gmail.com}"
+    depends_on:
+      - mongo
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      REACT_APP_BACKEND_URL: "http://localhost:8000"
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo-data:
