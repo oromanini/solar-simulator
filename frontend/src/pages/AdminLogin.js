@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLogin() {
@@ -19,7 +18,11 @@ export default function AdminLogin() {
       >
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Sun className="w-12 h-12 text-primary" />
+            <img
+              src="/logo_site.png"
+              alt="Alluz Energia"
+              className="w-12 h-12 object-contain"
+            />
             <span className="text-3xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <h1 className="text-2xl font-bold text-secondary mb-2">Área Administrativa</h1>

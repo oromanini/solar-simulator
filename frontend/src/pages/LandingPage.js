@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sun, Zap, PiggyBank, Home, ArrowRight, Instagram } from "lucide-react";
+import { Zap, PiggyBank, Home, ArrowRight, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
@@ -12,7 +12,11 @@ export default function LandingPage() {
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-stone-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Sun className="w-8 h-8 text-primary" />
+            <img
+              src="/logo_site.png"
+              alt="Alluz Energia"
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-2xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <div className="flex items-center gap-4">
@@ -196,7 +200,11 @@ export default function LandingPage() {
       <footer className="bg-stone-900 text-stone-300 py-12 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Sun className="w-8 h-8 text-primary" />
+            <img
+              src="/logo_site.png"
+              alt="Alluz Energia"
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-2xl font-bold text-white">Alluz Energia</span>
           </div>
           <p className="mb-4">Alluz. Onde há luz, lá nos estaremos!</p>
