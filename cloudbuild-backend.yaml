@@ -1,0 +1,33 @@
+steps:
+  # 1. Build da imagem usando o Dockerfile da pasta backend
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"
+      - "."
+    dir: "backend"
+
+  # 2. Push da imagem para o Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"
+
+  # 3. Deploy automático para o Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "solar-backend"
+      - "--image"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"

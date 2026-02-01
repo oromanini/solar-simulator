@@ -1,0 +1,35 @@
+steps:
+  # 1. Construir a imagem do Frontend injetando a URL do Backend como argumento
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/frontend-img:latest"
+      - "--build-arg"
+      - "VITE_API_URL=https://solar-backend-628533922400.us-central1.run.app"
+      - "."
+    dir: "frontend"
+
+  # 2. Enviar para o Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/frontend-img:latest"
+
+  # 3. Atualizar o serviço no Cloud Run automaticamente
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "solar-frontend"
+      - "--image"
+      - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/frontend-img:latest"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/frontend-img:latest"
