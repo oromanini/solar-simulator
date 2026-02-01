@@ -1,12 +1,12 @@
 steps:
   # 1. Build da imagem usando o Dockerfile da pasta backend
   - name: "gcr.io/cloud-builders/docker"
+    dir: "backend"
     args:
       - "build"
       - "-t"
       - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"
       - "."
-    dir: "."
 
   # 2. Push da imagem para o Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
