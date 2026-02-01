@@ -8,7 +8,7 @@ steps:
       - "--build-arg"
       - "VITE_API_URL=https://solar-backend-628533922400.us-central1.run.app"
       - "."
-    dir: "frontend"
+    dir: "."
 
   # 2. Enviar para o Artifact Registry
   - name: "gcr.io/cloud-builders/docker"

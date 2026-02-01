@@ -6,7 +6,7 @@ steps:
       - "-t"
       - "us-central1-docker.pkg.dev/$PROJECT_ID/solar-repo/backend-img:latest"
       - "."
-    dir: "backend"
+    dir: "."
 
   # 2. Push da imagem para o Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
