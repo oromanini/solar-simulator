@@ -1,6 +1,7 @@
 steps:
   # 1. Construir a imagem do Frontend injetando a URL do Backend como argumento
   - name: "gcr.io/cloud-builders/docker"
+    dir: "frontend"
     args:
       - "build"
       - "-t"
@@ -8,7 +9,6 @@ steps:
       - "--build-arg"
       - "VITE_API_URL=https://solar-backend-628533922400.us-central1.run.app"
       - "."
-    dir: "."
 
   # 2. Enviar para o Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
