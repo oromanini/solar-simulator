@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
-import { Sun, Zap, PiggyBank, TrendingUp, Calendar, ArrowRight, X } from "lucide-react";
+import { Zap, PiggyBank, TrendingUp, Calendar, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -167,7 +167,11 @@ export default function ResultPage() {
       <header className="bg-white/80 backdrop-blur-md border-b border-stone-200 py-4 px-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Sun className="w-8 h-8 text-primary" />
+            <img
+              src="/logo_site.png"
+              alt="Alluz Energia"
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <Button

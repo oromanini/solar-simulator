@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API } from "@/App";
-import { Sun, LogOut, Users, DollarSign, TrendingUp, Filter, Search, Plus, X, Edit, Trash2, Settings } from "lucide-react";
+import { LogOut, Users, DollarSign, TrendingUp, Filter, Search, Plus, X, Edit, Trash2, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -280,7 +280,11 @@ export default function AdminDashboard() {
       <header className="bg-white border-b border-stone-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Sun className="w-8 h-8 text-primary" />
+            <img
+              src="/logo_site.png"
+              alt="Alluz Energia"
+              className="w-8 h-8 object-contain"
+            />
             <div>
               <h1 className="text-xl font-bold text-secondary">Alluz Energia</h1>
               <p className="text-xs text-stone-500">Painel Administrativo</p>
