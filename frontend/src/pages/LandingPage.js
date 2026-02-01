@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const stations = Array.from({ length: 14 }, (_, index) => {
+    const stationNumber = index + 1;
+    return {
+      id: stationNumber,
+      title: `Estação ${stationNumber}`,
+      image: `/image/stations/${stationNumber}.jpeg`
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-50 to-stone-100 noise-bg">
@@ -175,6 +183,38 @@ export default function LandingPage() {
               <h3 className="text-xl font-semibold text-secondary mb-3">Energia Limpa</h3>
               <p className="text-stone-600 leading-relaxed">Contribua para um planeta mais sustentável com energia 100% renovável.</p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stations Section */}
+      <section className="py-20 px-4 bg-stone-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">Estações da Via Sacra</h2>
+            <p className="text-stone-600 text-lg">Acompanhe as imagens de cada estação</p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {stations.map((station) => (
+              <motion.div
+                key={station.id}
+                whileHover={{ y: -6 }}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 hover:shadow-md transition-all duration-300"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={station.image}
+                    alt={`${station.title} da Via Sacra`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-secondary">{station.title}</h3>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
