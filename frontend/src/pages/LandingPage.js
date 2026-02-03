@@ -17,7 +17,6 @@ export default function LandingPage() {
               alt="Alluz Energia"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-2xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <div className="flex items-center gap-4">
             <a href="https://www.instagram.com/alluzenergia/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">

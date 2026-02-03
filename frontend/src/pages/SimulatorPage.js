@@ -173,7 +173,6 @@ export default function SimulatorPage() {
               alt="Alluz Energia"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <div className="text-sm text-stone-600">
             Passo {currentStep} de {totalSteps}
