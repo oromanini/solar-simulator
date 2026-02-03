@@ -170,7 +170,7 @@ export default function ResultPage() {
             <img
               src="/logo_site.png"
               alt="Alluz Energia"
-              className="w-8 h-8 object-contain"
+              className="w-12 h-12 object-contain"
             />
           </div>
           <Button

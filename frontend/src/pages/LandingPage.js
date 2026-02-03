@@ -15,7 +15,7 @@ export default function LandingPage() {
             <img
               src="/logo_site.png"
               alt="Alluz Energia"
-              className="w-8 h-8 object-contain"
+              className="w-12 h-12 object-contain"
             />
           </div>
           <div className="flex items-center gap-4">
@@ -202,7 +202,7 @@ export default function LandingPage() {
             <img
               src="/logo_site.png"
               alt="Alluz Energia"
-              className="w-8 h-8 object-contain"
+              className="w-12 h-12 object-contain"
             />
             <span className="text-2xl font-bold text-white">Alluz Energia</span>
           </div>
