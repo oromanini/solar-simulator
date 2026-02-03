@@ -172,7 +172,6 @@ export default function ResultPage() {
               alt="Alluz Energia"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-xl font-bold text-secondary">Alluz Energia</span>
           </div>
           <Button
             variant="outline"

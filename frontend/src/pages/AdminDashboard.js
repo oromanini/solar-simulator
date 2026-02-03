@@ -285,10 +285,6 @@ export default function AdminDashboard() {
               alt="Alluz Energia"
               className="w-8 h-8 object-contain"
             />
-            <div>
-              <h1 className="text-xl font-bold text-secondary">Alluz Energia</h1>
-              <p className="text-xs text-stone-500">Painel Administrativo</p>
-            </div>
           </div>
           <Button
             variant="outline"
