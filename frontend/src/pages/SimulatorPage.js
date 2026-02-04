@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Home, Building2, Users } from "lucide-react";
@@ -181,6 +181,12 @@ export default function SimulatorPage() {
     cidade.nome.toLowerCase().includes(cidadeFiltro.trim().toLowerCase())
   );
 
+  useEffect(() => {
+    if (currentStep === 3 && estados.length === 0) {
+      loadEstados();
+    }
+  }, [currentStep, estados.length]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-50 to-stone-100 noise-bg flex flex-col">
       {/* Header */}
@@ -190,7 +196,7 @@ export default function SimulatorPage() {
             <img
               src="/logo_site.png"
               alt="Alluz Energia"
-              className="w-14 h-14 object-contain"
+              className="w-20 h-20 object-contain"
             />
           </div>
           <div className="text-sm text-stone-600">
