@@ -11,7 +11,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AuthCallback from "@/pages/AuthCallback";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = "https://solar-backend-628533922400.us-central1.run.app";
 export const API = `${BACKEND_URL}/api`;
 
 function AppRouter() {
