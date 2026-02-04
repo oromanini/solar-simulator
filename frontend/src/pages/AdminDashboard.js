@@ -283,7 +283,7 @@ export default function AdminDashboard() {
             <img
               src="/logo_site.png"
               alt="Alluz Energia"
-              className="w-12 h-12 object-contain"
+              className="w-14 h-14 object-contain"
             />
           </div>
           <Button
