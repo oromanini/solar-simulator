@@ -35,6 +35,7 @@ export default function SimulatorPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
+  const [isLoadingEstados, setIsLoadingEstados] = useState(false);
   const [estadoFiltro, setEstadoFiltro] = useState("");
   const [cidadeFiltro, setCidadeFiltro] = useState("");
   const [formData, setFormData] = useState({
@@ -150,12 +151,15 @@ export default function SimulatorPage() {
 
   const loadEstados = async () => {
     try {
+      setIsLoadingEstados(true);
       const response = await axios.get(`${API}/estados`);
       const data = response.data;
       const normalizedEstados = Array.isArray(data) ? data : data?.estados || [];
       setEstados(normalizedEstados);
     } catch (error) {
       console.error('Error loading estados:', error);
+    } finally {
+      setIsLoadingEstados(false);
     }
   };
 
@@ -345,15 +349,22 @@ export default function SimulatorPage() {
                               className="h-9"
                             />
                           </div>
-                          {estadosFiltrados.map((estado) => (
-                            <SelectItem
-                              key={estado.estado_id}
-                              value={String(estado.estado_id)}
-                              data-testid={`state-option-${estado.sigla}`}
-                            >
-                              {estado.nome}
-                            </SelectItem>
-                          ))}
+                          {isLoadingEstados ? (
+                            <div className="px-3 py-4 text-sm text-stone-500 flex items-center gap-2">
+                              <span className="h-4 w-4 animate-spin rounded-full border-2 border-stone-300 border-t-primary" />
+                              Carregando estados...
+                            </div>
+                          ) : (
+                            estadosFiltrados.map((estado) => (
+                              <SelectItem
+                                key={estado.estado_id}
+                                value={String(estado.estado_id)}
+                                data-testid={`state-option-${estado.sigla}`}
+                              >
+                                {estado.nome}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                     </div>
