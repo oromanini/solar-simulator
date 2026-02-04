@@ -147,7 +147,9 @@ export default function SimulatorPage() {
   const loadEstados = async () => {
     try {
       const response = await axios.get(`${API}/estados`);
-      setEstados(response.data);
+      const data = response.data;
+      const normalizedEstados = Array.isArray(data) ? data : data?.estados || [];
+      setEstados(normalizedEstados);
     } catch (error) {
       console.error('Error loading estados:', error);
     }
@@ -156,7 +158,9 @@ export default function SimulatorPage() {
   const loadCidades = async (estado) => {
     try {
       const response = await axios.get(`${API}/cidades/${estado}`);
-      setCidades(response.data);
+      const data = response.data;
+      const normalizedCidades = Array.isArray(data) ? data : data?.cidades || [];
+      setCidades(normalizedCidades);
     } catch (error) {
       console.error('Error loading cidades:', error);
     }
