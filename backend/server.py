@@ -262,6 +262,10 @@ async def get_session_from_cookie_or_header(
 
 # ============ AUTH ROUTES ============
 
+@api_router.options("/auth/{path:path}")
+async def auth_preflight(path: str):
+    return Response(status_code=204)
+
 @api_router.post("/auth/session")
 async def exchange_session(request: Request, response: Response):
     raise HTTPException(status_code=501, detail="Auth session exchange is not configured.")
