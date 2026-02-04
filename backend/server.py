@@ -307,7 +307,8 @@ async def register_user(payload: UserCreate, response: Response):
         key="session_token",
         value=session_doc["session_token"],
         httponly=True,
-        samesite="lax",
+        samesite="none",
+        secure=True,
         path="/",
     )
     return {"user": {k: v for k, v in user_doc.items() if k != "password_hash"}}
@@ -323,7 +324,8 @@ async def login_user(payload: UserLogin, response: Response):
         key="session_token",
         value=session_doc["session_token"],
         httponly=True,
-        samesite="lax",
+        samesite="none",
+        secure=True,
         path="/",
     )
     return {"user": {k: v for k, v in user_doc.items() if k != "password_hash"}}
