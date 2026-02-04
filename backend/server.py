@@ -13,6 +13,7 @@ from datetime import datetime, timezone, timedelta
 import asyncio
 import resend
 import math
+import httpx
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -40,6 +41,65 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# ============ LOCALIDADES (ESTADOS/CIDADES) ============
+
+IBGE_BASE_URL = "https://servicodados.ibge.gov.br/api/v1/localidades"
+
+async def seed_localidades_if_needed():
+    estados_count = await db.estados.count_documents({})
+    cidades_count = await db.cidades.count_documents({})
+    if estados_count > 0 and cidades_count > 0:
+        return
+
+    logger.info("Seeding estados/cidades from IBGE API.")
+    async with httpx.AsyncClient(timeout=30) as client:
+        estados_response = await client.get(f"{IBGE_BASE_URL}/estados?orderBy=nome")
+        estados_response.raise_for_status()
+        estados_data = estados_response.json()
+
+        estados_docs = [
+            {
+                "estado_id": estado["id"],
+                "sigla": estado["sigla"],
+                "nome": estado["nome"],
+            }
+            for estado in estados_data
+        ]
+
+        if estados_docs:
+            await db.estados.delete_many({})
+            await db.estados.insert_many(estados_docs)
+
+        cidades_docs = []
+        for estado in estados_data:
+            estado_id = estado["id"]
+            estado_sigla = estado["sigla"]
+            estado_nome = estado["nome"]
+            cidades_response = await client.get(f"{IBGE_BASE_URL}/estados/{estado_id}/municipios")
+            cidades_response.raise_for_status()
+            cidades_data = cidades_response.json()
+            for cidade in cidades_data:
+                cidades_docs.append(
+                    {
+                        "cidade_id": cidade["id"],
+                        "nome": cidade["nome"],
+                        "estado_id": estado_id,
+                        "estado_sigla": estado_sigla,
+                        "estado_nome": estado_nome,
+                    }
+                )
+
+        if cidades_docs:
+            await db.cidades.delete_many({})
+            await db.cidades.insert_many(cidades_docs)
+
+@app.on_event("startup")
+async def startup_localidades():
+    try:
+        await seed_localidades_if_needed()
+    except Exception as exc:
+        logger.error("Failed to seed localidades: %s", exc)
 
 # ============ MODELS ============
 
@@ -122,6 +182,18 @@ class IrradiacaoSolar(BaseModel):
     cidade: str
     incidencia_media: float
 
+class Estado(BaseModel):
+    estado_id: int
+    sigla: str
+    nome: str
+
+class Cidade(BaseModel):
+    cidade_id: int
+    nome: str
+    estado_id: int
+    estado_sigla: str
+    estado_nome: str
+
 class LeadUpdateStatus(BaseModel):
     status: str
 
@@ -202,45 +274,38 @@ async def root():
 
 @api_router.get("/estados")
 async def get_estados():
-    estados = [
-        "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
-        "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
-        "RS", "RO", "RR", "SC", "SP", "SE", "TO"
-    ]
-    return estados
+    estados = await db.estados.find({}, {"_id": 0}).sort("nome", 1).to_list(100)
+    if estados:
+        return estados
+    await seed_localidades_if_needed()
+    return await db.estados.find({}, {"_id": 0}).sort("nome", 1).to_list(100)
 
 @api_router.get("/cidades/{estado}")
 async def get_cidades(estado: str):
-    cidades_por_estado = {
-        "AC": ["Rio Branco", "Cruzeiro do Sul", "Sena Madureira"],
-        "AL": ["Maceió", "Arapiraca", "Palmeira dos Índios"],
-        "AP": ["Macapá", "Santana", "Laranjal do Jari"],
-        "AM": ["Manaus", "Parintins", "Itacoatiara"],
-        "BA": ["Salvador", "Feira de Santana", "Vitória da Conquista", "Camaçari", "Itabuna"],
-        "CE": ["Fortaleza", "Caucaia", "Juazeiro do Norte", "Maracanaú"],
-        "DF": ["Brasília"],
-        "ES": ["Vitória", "Vila Velha", "Serra", "Cariacica"],
-        "GO": ["Goiânia", "Aparecida de Goiânia", "Anápolis", "Rio Verde"],
-        "MA": ["São Luís", "Imperatriz", "São José de Ribamar", "Timon"],
-        "MT": ["Cuiabá", "Várzea Grande", "Rondonópolis", "Sinop"],
-        "MS": ["Campo Grande", "Dourados", "Três Lagoas", "Corumbá"],
-        "MG": ["Belo Horizonte", "Uberlândia", "Contagem", "Juiz de Fora", "Betim"],
-        "PA": ["Belém", "Ananindeua", "Santarém", "Marabá"],
-        "PB": ["João Pessoa", "Campina Grande", "Santa Rita", "Patos"],
-        "PR": ["Curitiba", "Londrina", "Maringá", "Ponta Grossa", "Cascavel", "Foz do Iguaçu"],
-        "PE": ["Recife", "Jaboatão dos Guararapes", "Olinda", "Caruaru"],
-        "PI": ["Teresina", "Parnaíba", "Picos", "Floriano"],
-        "RJ": ["Rio de Janeiro", "São Gonçalo", "Duque de Caxias", "Nova Iguaçu", "Niterói"],
-        "RN": ["Natal", "Mossoró", "Parnamirim", "São Gonçalo do Amarante"],
-        "RS": ["Porto Alegre", "Caxias do Sul", "Pelotas", "Canoas", "Santa Maria"],
-        "RO": ["Porto Velho", "Ji-Paraná", "Ariquemes", "Vilhena"],
-        "RR": ["Boa Vista", "Rorainópolis", "Caracaraí"],
-        "SC": ["Florianópolis", "Joinville", "Blumenau", "São José", "Chapecó"],
-        "SP": ["São Paulo", "Guarulhos", "Campinas", "São Bernardo do Campo", "Santo André", "Ribeirão Preto"],
-        "SE": ["Aracaju", "Nossa Senhora do Socorro", "Lagarto", "Itabaiana"],
-        "TO": ["Palmas", "Araguaína", "Gurupi", "Porto Nacional"]
-    }
-    return cidades_por_estado.get(estado.upper(), [])
+    estado_doc = None
+    if estado.isdigit():
+        estado_doc = await db.estados.find_one({"estado_id": int(estado)}, {"_id": 0})
+    elif len(estado) == 2:
+        estado_doc = await db.estados.find_one({"sigla": estado.upper()}, {"_id": 0})
+    else:
+        estado_doc = await db.estados.find_one({"nome": {"$regex": f"^{estado}$", "$options": "i"}}, {"_id": 0})
+
+    if not estado_doc:
+        await seed_localidades_if_needed()
+        if estado.isdigit():
+            estado_doc = await db.estados.find_one({"estado_id": int(estado)}, {"_id": 0})
+        elif len(estado) == 2:
+            estado_doc = await db.estados.find_one({"sigla": estado.upper()}, {"_id": 0})
+        else:
+            estado_doc = await db.estados.find_one({"nome": {"$regex": f"^{estado}$", "$options": "i"}}, {"_id": 0})
+
+    if not estado_doc:
+        return []
+
+    return await db.cidades.find(
+        {"estado_id": estado_doc["estado_id"]},
+        {"_id": 0}
+    ).sort("nome", 1).to_list(600)
 
 @api_router.get("/irradiacao/{estado}/{cidade}")
 async def get_irradiacao(estado: str, cidade: str):

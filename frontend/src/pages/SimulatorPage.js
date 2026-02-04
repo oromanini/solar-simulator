@@ -35,10 +35,14 @@ export default function SimulatorPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [estados, setEstados] = useState([]);
   const [cidades, setCidades] = useState([]);
+  const [estadoFiltro, setEstadoFiltro] = useState("");
+  const [cidadeFiltro, setCidadeFiltro] = useState("");
   const [formData, setFormData] = useState({
     numResidencias: 0,
     valoresConta: [],
     estado: "",
+    estadoId: "",
+    estadoSigla: "",
     cidade: "",
     tipoTelhado: "",
     tipoProjeto: ""
@@ -50,7 +54,7 @@ export default function SimulatorPage() {
   const handleNext = async () => {
     if (currentStep === 1 && formData.numResidencias === 0) return;
     if (currentStep === 2 && formData.valoresConta.length !== formData.numResidencias) return;
-    if (currentStep === 3 && (!formData.estado || !formData.cidade)) return;
+    if (currentStep === 3 && (!formData.estadoId || !formData.cidade)) return;
     if (currentStep === 4 && !formData.tipoTelhado) return;
     if (currentStep === 5 && !formData.tipoProjeto) {
       return;
@@ -79,7 +83,7 @@ export default function SimulatorPage() {
 
       // Get irradiation data
       const irradiacaoResponse = await axios.get(
-        `${API}/irradiacao/${formData.estado}/${formData.cidade}`
+        `${API}/irradiacao/${formData.estadoSigla}/${formData.cidade}`
       );
       const incidenciaSolar = irradiacaoResponse.data.incidencia_media;
 
@@ -165,6 +169,17 @@ export default function SimulatorPage() {
       console.error('Error loading cidades:', error);
     }
   };
+
+  const estadosFiltrados = estados.filter((estado) => {
+    const filtro = estadoFiltro.trim().toLowerCase();
+    return (
+      estado.nome.toLowerCase().includes(filtro) ||
+      estado.sigla.toLowerCase().includes(filtro)
+    );
+  });
+  const cidadesFiltradas = cidades.filter((cidade) =>
+    cidade.nome.toLowerCase().includes(cidadeFiltro.trim().toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 via-orange-50 to-stone-100 noise-bg flex flex-col">
@@ -290,12 +305,24 @@ export default function SimulatorPage() {
                     <div>
                       <Label htmlFor="estado" className="text-base mb-2 block">Estado</Label>
                       <Select
-                        value={formData.estado}
+                        value={formData.estadoId ? String(formData.estadoId) : ""}
                         onValueChange={(value) => {
-                          setFormData({ ...formData, estado: value, cidade: "" });
-                          loadCidades(value);
+                          const estadoSelecionado = estados.find((estado) => String(estado.estado_id) === value);
+                          if (!estadoSelecionado) {
+                            return;
+                          }
+                          setFormData({
+                            ...formData,
+                            estado: estadoSelecionado.nome,
+                            estadoId: estadoSelecionado.estado_id,
+                            estadoSigla: estadoSelecionado.sigla,
+                            cidade: ""
+                          });
+                          setCidadeFiltro("");
+                          loadCidades(estadoSelecionado.estado_id);
                         }}
                         onOpenChange={(open) => {
+                          if (open) setEstadoFiltro("");
                           if (open && estados.length === 0) loadEstados();
                         }}
                       >
@@ -303,29 +330,58 @@ export default function SimulatorPage() {
                           <SelectValue placeholder="Selecione o estado" />
                         </SelectTrigger>
                         <SelectContent>
-                          {estados.map((estado) => (
-                            <SelectItem key={estado} value={estado} data-testid={`state-option-${estado}`}>
-                              {estado}
+                          <div className="sticky top-0 z-10 bg-popover p-2">
+                            <Input
+                              value={estadoFiltro}
+                              onChange={(event) => setEstadoFiltro(event.target.value)}
+                              onKeyDown={(event) => event.stopPropagation()}
+                              placeholder="Digite para filtrar"
+                              className="h-9"
+                            />
+                          </div>
+                          {estadosFiltrados.map((estado) => (
+                            <SelectItem
+                              key={estado.estado_id}
+                              value={String(estado.estado_id)}
+                              data-testid={`state-option-${estado.sigla}`}
+                            >
+                              {estado.nome}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {formData.estado && (
+                    {formData.estadoId && (
                       <div>
                         <Label htmlFor="cidade" className="text-base mb-2 block">Cidade</Label>
                         <Select
                           value={formData.cidade}
                           onValueChange={(value) => setFormData({ ...formData, cidade: value })}
+                          onOpenChange={(open) => {
+                            if (open) setCidadeFiltro("");
+                          }}
                         >
                           <SelectTrigger className="h-14 text-lg" data-testid="city-select">
                             <SelectValue placeholder="Selecione a cidade" />
                           </SelectTrigger>
                           <SelectContent>
-                            {cidades.map((cidade) => (
-                              <SelectItem key={cidade} value={cidade} data-testid={`city-option-${cidade}`}>
-                                {cidade}
+                            <div className="sticky top-0 z-10 bg-popover p-2">
+                              <Input
+                                value={cidadeFiltro}
+                                onChange={(event) => setCidadeFiltro(event.target.value)}
+                                onKeyDown={(event) => event.stopPropagation()}
+                                placeholder="Digite para filtrar"
+                                className="h-9"
+                              />
+                            </div>
+                            {cidadesFiltradas.map((cidade) => (
+                              <SelectItem
+                                key={cidade.cidade_id}
+                                value={cidade.nome}
+                                data-testid={`city-option-${cidade.cidade_id}`}
+                              >
+                                {cidade.nome}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -411,7 +467,7 @@ export default function SimulatorPage() {
                   disabled={
                     (currentStep === 1 && formData.numResidencias === 0) ||
                     (currentStep === 2 && formData.valoresConta.some(v => !v || parseFloat(v) <= 0)) ||
-                    (currentStep === 3 && (!formData.estado || !formData.cidade)) ||
+                    (currentStep === 3 && (!formData.estadoId || !formData.cidade)) ||
                     (currentStep === 4 && !formData.tipoTelhado) ||
                     (currentStep === 5 && !formData.tipoProjeto)
                   }
