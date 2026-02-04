@@ -7,6 +7,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from passlib.context import CryptContext
 from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -28,6 +29,8 @@ resend.api_key = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 NOTIFICATION_EMAIL = os.environ.get('NOTIFICATION_EMAIL', 'alluzenergia@gmail.com')
 ALLOWED_ADMIN_EMAIL = os.environ.get('ALLOWED_ADMIN_EMAIL', 'alluzenergia@gmail.com')
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Create the main app without a prefix
 app = FastAPI()
@@ -109,6 +112,15 @@ class User(BaseModel):
     name: str
     picture: Optional[str] = None
     created_at: datetime
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    name: str
+    password: str = Field(min_length=8)
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
 
 class UserSession(BaseModel):
     user_id: str
@@ -236,7 +248,10 @@ async def get_session_from_cookie_or_header(
         await db.user_sessions.delete_one({"session_token": token})
         raise HTTPException(status_code=401, detail="Session expired")
     
-    user_doc = await db.users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
+    user_doc = await db.users.find_one(
+        {"user_id": session_doc["user_id"]},
+        {"_id": 0, "password_hash": 0}
+    )
     if not user_doc:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -250,6 +265,64 @@ async def get_session_from_cookie_or_header(
 @api_router.post("/auth/session")
 async def exchange_session(request: Request, response: Response):
     raise HTTPException(status_code=501, detail="Auth session exchange is not configured.")
+
+async def create_session_for_user(user_id: str) -> dict:
+    session_token = uuid.uuid4().hex
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    session_doc = {
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.user_sessions.insert_one(session_doc)
+    return session_doc
+
+@api_router.post("/auth/register")
+async def register_user(payload: UserCreate, response: Response):
+    if payload.email != ALLOWED_ADMIN_EMAIL:
+        raise HTTPException(status_code=403, detail="Only the admin email can be registered.")
+
+    existing = await db.users.find_one({"email": payload.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=409, detail="User already exists.")
+
+    password_hash = pwd_context.hash(payload.password)
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    user_doc = {
+        "user_id": user_id,
+        "email": payload.email,
+        "name": payload.name,
+        "password_hash": password_hash,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.users.insert_one(user_doc)
+
+    session_doc = await create_session_for_user(user_id)
+    response.set_cookie(
+        key="session_token",
+        value=session_doc["session_token"],
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+    return {"user": {k: v for k, v in user_doc.items() if k != "password_hash"}}
+
+@api_router.post("/auth/login")
+async def login_user(payload: UserLogin, response: Response):
+    user_doc = await db.users.find_one({"email": payload.email}, {"_id": 0})
+    if not user_doc or not pwd_context.verify(payload.password, user_doc.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    session_doc = await create_session_for_user(user_doc["user_id"])
+    response.set_cookie(
+        key="session_token",
+        value=session_doc["session_token"],
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+    return {"user": {k: v for k, v in user_doc.items() if k != "password_hash"}}
 
 @api_router.get("/auth/me")
 async def get_current_user(user: dict = Depends(get_session_from_cookie_or_header)):
