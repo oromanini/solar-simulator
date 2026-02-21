@@ -76,8 +76,7 @@ export default function AdminDashboard() {
   const loadData = async () => {
     try {
       if (activeTab === "leads") {
-        await loadLeads();
-        await loadStats();
+        await Promise.all([loadLeads(), loadStats(), loadStatusTypes()]);
       } else if (activeTab === "status") {
         await loadStatusTypes();
       } else if (activeTab === "tarifas") {
