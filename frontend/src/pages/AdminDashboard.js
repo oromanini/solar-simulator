@@ -280,7 +280,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img
-              src="/logo_site.png"
+              src="/logo_site.svg"
               alt="Alluz Energia"
               className="w-14 h-14 object-contain"
             />

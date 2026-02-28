@@ -48,7 +48,7 @@ export default function AdminLogin() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-6">
             <img
-              src="/logo_site.png"
+              src="/logo_site.svg"
               alt="Alluz Energia"
               className="w-14 h-14 object-contain"
             />
