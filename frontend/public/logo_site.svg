@@ -1,0 +1,16 @@
+<svg width="995" height="372" viewBox="0 0 995 372" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="995" height="372" fill="transparent"/>
+  <circle cx="210" cy="186" r="112" stroke="#FF8D95" stroke-width="14"/>
+  <path d="M210 274L144 208C114 178 118 133 151 117C174 106 195 113 210 131C225 113 246 106 269 117C302 133 306 178 276 208L210 274Z" fill="url(#heartGrad)"/>
+  <text x="390" y="250" font-family="Inter, Poppins, Arial, sans-serif" font-size="180" font-weight="700" fill="url(#textGrad)">Alluz</text>
+  <defs>
+    <linearGradient id="heartGrad" x1="130" y1="118" x2="286" y2="270" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFC400"/>
+      <stop offset="1" stop-color="#FF9800"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="390" y1="80" x2="840" y2="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#040A10"/>
+      <stop offset="1" stop-color="#0E1C2A"/>
+    </linearGradient>
+  </defs>
+</svg>

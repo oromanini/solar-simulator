@@ -198,7 +198,7 @@ export default function SimulatorPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
-              src="/logo_site.png"
+              src="/logo_site.svg"
               alt="Alluz Energia"
               className="w-20 h-20 object-contain"
             />
