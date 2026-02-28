@@ -15,7 +15,7 @@ export default function LandingPage() {
             <img
               src="/logo_site.svg"
               alt="Alluz Energia"
-              className="w-20 h-20 object-contain"
+              className="w-[170px] sm:w-[220px] h-auto object-contain"
             />
           </div>
           <div className="flex items-center gap-4">
